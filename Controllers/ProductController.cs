@@ -30,6 +30,13 @@ namespace E_Auction.Controllers
         {
             return Ok(await _productService.GetProductById(id));
         }
+
+        [HttpPut("Add")]
+        public async Task<ActionResult<List<Product>>> AddProduct()
+        {
+            return Ok(await _productService.AddProduct());
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<List<Product>>> DeleteProduct(int id)
         {
