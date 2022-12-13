@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using E_Auction.Dtos.Product;
 using E_Auction.Models;
 using E_Auction.Services.ProductService;
 using Microsoft.AspNetCore.Mvc;
@@ -19,26 +20,26 @@ namespace E_Auction.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> GetProducts()                             
         {
-            return Ok(await _productService.GetProducts());
+            return Ok(await _productService.GetProducts());                                     
         }
 
         [HttpGet("{id}")]
 
-        public async Task<ActionResult<Product>> GetProductbyId(int id)
+        public async Task<ActionResult<ServiceResponse<GetProductDto>>> GetProductbyId(int id)                          
         {
             return Ok(await _productService.GetProductById(id));
         }
 
-        [HttpPut("Add")]
-        public async Task<ActionResult<List<Product>>> AddProduct()
+        [HttpPost]
+        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> AddProduct(AddProductDto newProduct)      
         {
-            return Ok(await _productService.AddProduct());
+            return Ok(await _productService.AddProduct(newProduct));
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<List<Product>>> DeleteProduct(int id)
+        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> DeleteProduct(int id)
         {
             return Ok(await _productService.DeleteProduct(id));
         }

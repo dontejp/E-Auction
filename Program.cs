@@ -1,6 +1,6 @@
 using E_Auction.Data;
 using E_Auction.Services.ProductService;
-using E_Auction.Services.SellerService;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +14,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProductService, ProductService>();
-//builder.Services.AddScoped<ISellerService, SellerService>();
+
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

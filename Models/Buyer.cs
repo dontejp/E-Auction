@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace E_Auction.Models
 {
-    public class Seller
+    public class Buyer
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -16,8 +16,9 @@ namespace E_Auction.Models
         public int Pin { get; set; }
         public int Phone { get; set; }
         public string Email { get; set; }
-        public List<Product>? Products { get; set; }
+        public Product Product { get; set; }
+        public int ProductId { get; set; } 
+        public int BidAmount { get; set; }
         public User? User { get; set; }
-        public int UserId { get; set; }
     }
 }

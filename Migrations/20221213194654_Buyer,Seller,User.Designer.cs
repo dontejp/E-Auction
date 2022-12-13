@@ -4,6 +4,7 @@ using E_Auction.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EAuction.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221213194654_Buyer,Seller,User")]
+    partial class BuyerSellerUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,13 +158,7 @@ namespace EAuction.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Sellers");
                 });
@@ -182,11 +179,17 @@ namespace EAuction.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<int>("SellerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SellerId")
+                        .IsUnique();
 
                     b.ToTable("User");
                 });
@@ -219,15 +222,15 @@ namespace EAuction.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("E_Auction.Models.Seller", b =>
+            modelBuilder.Entity("E_Auction.Models.User", b =>
                 {
-                    b.HasOne("E_Auction.Models.User", "User")
-                        .WithOne("Seller")
-                        .HasForeignKey("E_Auction.Models.Seller", "UserId")
+                    b.HasOne("E_Auction.Models.Seller", "Seller")
+                        .WithOne("User")
+                        .HasForeignKey("E_Auction.Models.User", "SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("E_Auction.Models.Product", b =>
@@ -238,13 +241,13 @@ namespace EAuction.Migrations
             modelBuilder.Entity("E_Auction.Models.Seller", b =>
                 {
                     b.Navigation("Products");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("E_Auction.Models.User", b =>
                 {
                     b.Navigation("Buyers");
-
-                    b.Navigation("Seller");
                 });
 #pragma warning restore 612, 618
         }
