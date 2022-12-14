@@ -1,4 +1,5 @@
 using E_Auction.Data;
+using E_Auction.Services.AuthService;
 using E_Auction.Services.ProductService;
 
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 );
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -28,6 +30,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

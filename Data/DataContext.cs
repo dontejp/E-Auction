@@ -17,7 +17,7 @@ namespace E_Auction.Data
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Seller> Sellers { get; set; }
-        public DbSet<Product> Buyers { get; set; }
-        public DbSet<Product> Users { get; set; }
+        public DbSet<Buyer> Buyers { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

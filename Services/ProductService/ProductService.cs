@@ -27,7 +27,7 @@ namespace E_Auction.Services.ProductService
         public async Task<ServiceResponse<List<GetProductDto>>> AddProduct(AddProductDto newProduct)        
         {
 
-            ServiceResponse<List<GetProductDto>> response = new ServiceResponse<List<GetProductDto>>();                                           //Dto instantiation
+            ServiceResponse<List<GetProductDto>> response = new ServiceResponse<List<GetProductDto>>();         //Dto instantiation
             if(await ProductNameValidation(newProduct))
             {
                 Product product = _mapper.Map<Product>(newProduct);                                             //Mapping the DTO to the Product
@@ -35,7 +35,7 @@ namespace E_Auction.Services.ProductService
                 _context.Products.Add(product);                                                                 //Adding product to the database
                 await _context.SaveChangesAsync();                                                              //Saving changes in the database
 
-                response.Data = await _context.Products                                                              //populating response ... grabbing from Products Table in the database
+                response.Data = await _context.Products                                                         //populating response ... grabbing from Products Table in the database
                     .Select(p => _mapper.Map<GetProductDto>(p))                                                 //Maps the products selected to Dto
                     .ToListAsync();                                                                             //puts it in a list form
 
@@ -50,16 +50,16 @@ namespace E_Auction.Services.ProductService
         }
         public async Task<ServiceResponse<List<GetProductDto>>> DeleteProduct(int id)
         {
-            ServiceResponse<List<GetProductDto>> response = new ServiceResponse<List<GetProductDto>>();
+            ServiceResponse<List<GetProductDto>> response = new ServiceResponse<List<GetProductDto>>();         //Dto instantiation
             Product product = _context.Products
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefault(p => p.Id == id);                                                               //Search Products table where the project id = id given and save it as a new product
             
-            if(product != null)
+            if(product != null)                                                                                 //if this new product isnt null
             {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
+                _context.Products.Remove(product);                                                              //remove product from database
+                await _context.SaveChangesAsync();                                                              //save chanes in the database
 
-                response.Data = await _context.Products
+                response.Data = await _context.Products                                                         //populating response...grabbing all products from table
                     .Select(p => _mapper.Map<GetProductDto>(p))
                     .ToListAsync();
             
