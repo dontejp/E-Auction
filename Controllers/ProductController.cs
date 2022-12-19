@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using E_Auction.Dtos.Product;
 using E_Auction.Models;
 using E_Auction.Services.ProductService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Auction.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class ProductController : ControllerBase

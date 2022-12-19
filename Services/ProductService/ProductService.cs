@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using E_Auction.Data;
@@ -16,21 +17,28 @@ namespace E_Auction.Services.ProductService
         List<Product> _data;
         private readonly IMapper _mapper;
         private readonly DataContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         //constructor
-        public ProductService(IMapper mapper ,DataContext context)
+        public ProductService(IMapper mapper ,DataContext context, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
             _context = context;
         }
 
+        private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User
+                                        .FindFirstValue(ClaimTypes.NameIdentifier));
         public async Task<ServiceResponse<List<GetProductDto>>> AddProduct(AddProductDto newProduct)        
         {
 
             ServiceResponse<List<GetProductDto>> response = new ServiceResponse<List<GetProductDto>>();         //Dto instantiation
-            if(await ProductNameValidation(newProduct))
+            if(ProductNameValidation(newProduct))
             {
                 Product product = _mapper.Map<Product>(newProduct);                                             //Mapping the DTO to the Product
+                product.Seller = _context.Sellers
+                    .FirstOrDefault(s => s.User.Id == GetUserId());
+                product.SellerId = product.Seller.Id;
 
                 _context.Products.Add(product);                                                                 //Adding product to the database
                 await _context.SaveChangesAsync();                                                              //Saving changes in the database
@@ -54,20 +62,47 @@ namespace E_Auction.Services.ProductService
             Product product = _context.Products
                 .FirstOrDefault(p => p.Id == id);                                                               //Search Products table where the project id = id given and save it as a new product
             
-            if(product != null)                                                                                 //if this new product isnt null
-            {
-                _context.Products.Remove(product);                                                              //remove product from database
-                await _context.SaveChangesAsync();                                                              //save chanes in the database
+            Seller seller = _context.Sellers
+                .FirstOrDefault(s => s.UserId == GetUserId());
 
-                response.Data = await _context.Products                                                         //populating response...grabbing all products from table
-                    .Select(p => _mapper.Map<GetProductDto>(p))
-                    .ToListAsync();
-            
+            if(product.SellerId == seller.UserId)
+            {
+
+                if(product != null) 
+                {
+                    if (DateTime.Compare(product.BidEndDate, DateTime.Now) > 0)                                          //if this new product isnt null AND the BidEndDate is later than now
+                    {
+                        if( product.Buyers == null )
+                        {
+                            _context.Products.Remove(product);                                                              //remove product from database
+                            await _context.SaveChangesAsync();                                                              //save chanes in the database
+
+                            response.Data = await _context.Products                                                         //populating response...grabbing all products from table
+                                .Select(p => _mapper.Map<GetProductDto>(p))
+                                .ToListAsync();
+                        }
+                        else
+                        {
+                            response.Success = false;
+                            response.Message = "Cannot Delete! Buyers already have bids on this!";
+                        }
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.Message = "Cannot delete! The bid closed on: " + product.BidEndDate;
+                    }
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Product with id: "+ id +" could not be found";
+                }
             }
             else
             {
                 response.Success = false;
-                response.Message = "Product with id: "+ id +" could not be found";
+                response.Message = "Cannot Delete! You do not own this product.";
             }
 
                 return response;
@@ -113,7 +148,7 @@ namespace E_Auction.Services.ProductService
         ////////                                              //////////////
         /////////////////////////////////////////////////////////////////////
 
-        private async Task<bool> ProductNameValidation(AddProductDto newProduct)        //checks if productName is not Null and between 5&30 
+        private bool ProductNameValidation(AddProductDto newProduct)        //checks if productName is not Null and between 5&30 
         {
             bool flag = true;
             if(newProduct.Name != string.Empty)
@@ -135,5 +170,7 @@ namespace E_Auction.Services.ProductService
                 return flag;
             }
         }
+
+
     }
 }

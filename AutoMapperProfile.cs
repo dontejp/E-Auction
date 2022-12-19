@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using E_Auction.Dtos.Product;
+using E_Auction.Dtos.Seller;
 using E_Auction.Models;
 
 namespace E_Auction
@@ -14,6 +15,8 @@ namespace E_Auction
         {
             CreateMap<Product, GetProductDto>();
             CreateMap<AddProductDto, Product>();
+            CreateMap<AddSellerDto, Seller>();
+            CreateMap<Seller, GetSellerDto>();
         }
     }
 }

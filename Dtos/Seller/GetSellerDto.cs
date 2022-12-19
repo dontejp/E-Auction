@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace E_Auction.Models
+namespace E_Auction.Dtos.Seller
 {
-    public class Buyer
+    public class GetSellerDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -16,10 +16,6 @@ namespace E_Auction.Models
         public int Pin { get; set; }
         public Int64 Phone { get; set; }
         public string Email { get; set; }
-        public Product Product { get; set; }
-        public int ProductId { get; set; } 
-        public int BidAmount { get; set; }
-        public User? User { get; set; }
         public int UserId { get; set; }
     }
 }

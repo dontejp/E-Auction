@@ -14,7 +14,7 @@ namespace E_Auction.Models
         public string City { get; set; }
         public string State { get; set; }
         public int Pin { get; set; }
-        public int Phone { get; set; }
+        public Int64 Phone { get; set; }
         public string Email { get; set; }
         public List<Product>? Products { get; set; }
         public User? User { get; set; }

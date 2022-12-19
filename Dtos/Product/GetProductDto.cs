@@ -15,5 +15,6 @@ namespace E_Auction.Dtos.Product
         public Category Category { get; set; }
         public double StartingPrice { get; set; }
         public DateTime BidEndDate {get;set;}
+        public int SellerId { get; set; }
     }
 }
