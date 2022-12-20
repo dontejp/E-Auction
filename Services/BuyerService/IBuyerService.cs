@@ -9,7 +9,7 @@ namespace E_Auction.Services.BuyerService
 {
     public interface IBuyerService
     {
-        Task<ServiceResponse<GetBuyerDto>> CreateBuyer();       //placing a bid
+        Task<ServiceResponse<List<GetBuyerDto>>> CreateBuyer();       //placing a bid
         
     }
 }

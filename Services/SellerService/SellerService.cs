@@ -134,7 +134,11 @@ namespace E_Auction.Services.SellerService
                     return flag;
                 }
             }
-            return flag;
+            else
+            {
+                flag = false;
+                return flag;
+            }
         }
     }
 }

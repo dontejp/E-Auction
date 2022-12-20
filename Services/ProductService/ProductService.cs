@@ -115,7 +115,7 @@ namespace E_Auction.Services.ProductService
             
             if(product != null)
             {
-            response.Data = _mapper.Map<GetProductDto>(product);
+                response.Data = _mapper.Map<GetProductDto>(product);
             }
             else
             {
