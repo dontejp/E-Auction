@@ -1,5 +1,6 @@
 using E_Auction.Data;
 using E_Auction.Services.AuthService;
+using E_Auction.Services.BuyerService;
 using E_Auction.Services.ProductService;
 using E_Auction.Services.SellerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,6 +31,7 @@ builder.Services.AddSwaggerGen(c => {
 });
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ISellerService, SellerService>();
+builder.Services.AddScoped<IBuyerService, BuyerService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => {    
         options.TokenValidationParameters = new TokenValidationParameters{

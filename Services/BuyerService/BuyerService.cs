@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace E_Auction.Services.BuyerService
 {
-    public class BuyerService 
+    public class BuyerService : IBuyerService
     {
         private readonly IMapper _mapper;
         private readonly DataContext _context;
@@ -37,7 +37,7 @@ namespace E_Auction.Services.BuyerService
                 buyer.UserId = buyer.User.Id;
                 buyer.Product = _context.Products
                     .FirstOrDefault(p => p.Id == newBid.ProductId);
-                if(buyer.Product != null)
+                if (buyer.Product != null)
                 {
                     _context.Buyers.Add(buyer);
                     await _context.SaveChangesAsync();
@@ -46,6 +46,11 @@ namespace E_Auction.Services.BuyerService
                         .Where(b => b.UserId == GetUserId())
                         .Select(b => _mapper.Map<GetBuyerDto>(b))
                         .ToList();
+                }
+                else
+                { 
+                    response.Success = false;
+                    response.Message = "Product not found";
                 }
             }
             else

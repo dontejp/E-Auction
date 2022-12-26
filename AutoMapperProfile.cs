@@ -14,11 +14,12 @@ namespace E_Auction
     {
         public AutoMapperProfile()
         {
-            CreateMap<Product, GetProductDto>();
             CreateMap<AddProductDto, Product>();
+            CreateMap<Product, GetProductDto>();
             CreateMap<AddSellerDto, Seller>();
             CreateMap<Seller, GetSellerDto>();
             CreateMap<AddBuyerDto, Buyer>();
+            CreateMap<Buyer, GetBuyerDto>();
         }
     }
 }
