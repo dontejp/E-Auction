@@ -9,9 +9,9 @@ namespace E_Auction.Services.ProductService
 {
     public interface IProductService
     {
-        Task<ServiceResponse<List<GetProductDto>>> GetProducts();
-        Task<ServiceResponse<GetProductDto>> GetProductById(int id);
-        Task<ServiceResponse<List<GetProductDto>>> AddProduct(AddProductDto newProduct);
-        Task<ServiceResponse<List<GetProductDto>>> DeleteProduct(int id);
+        Task<List<GetProductDto>> GetProducts();
+        Task<GetProductDto> GetProductById(int id);
+        Task<GetProductDto> AddProduct(AddProductWithSellerDto newProductWithSeller);
+        Task<List<GetProductDto>> DeleteProduct(int id);
     }
 }

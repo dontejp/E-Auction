@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using E_Auction.Data;
 using E_Auction.Dtos.Product;
+using E_Auction.Dtos.Seller;
 using E_Auction.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,36 +30,63 @@ namespace E_Auction.Services.ProductService
 
         private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User
                                         .FindFirstValue(ClaimTypes.NameIdentifier));
-        public async Task<ServiceResponse<List<GetProductDto>>> AddProduct(AddProductDto newProduct)        
-        {
+        // public async Task<List<GetProductDto>> AddProduct(AddProductDto newProduct)        
+        // {
 
-            ServiceResponse<List<GetProductDto>> response = new ServiceResponse<List<GetProductDto>>();         //Dto instantiation
-            if(ProductNameValidation(newProduct))
+        //     List<GetProductDto> Data = new List<GetProductDto>();         //Dto instantiation
+        //     if(ProductNameValidation(newProduct))
+        //     {
+        //         Product product = _mapper.Map<Product>(newProduct);                                             //Mapping the DTO to the Product
+        //         product.Seller = _context.Sellers
+        //             .FirstOrDefault(s => s.User.Id == GetUserId());
+        //         product.SellerId = product.Seller.Id;
+
+        //         _context.Products.Add(product);                                                                 //Adding product to the database
+        //         await _context.SaveChangesAsync();                                                              //Saving changes in the database
+
+        //         Data = await _context.Products                                                         //populating response ... grabbing from Products Table in the database
+        //             .Select(p => _mapper.Map<GetProductDto>(p))                                                 //Maps the products selected to Dto
+        //             .ToListAsync();                                                                             //puts it in a list form
+
+        //     }
+
+        //         return Data;
+        // }
+
+        public async Task<GetProductDto> AddProduct(AddProductWithSellerDto newProduct)    //This is the origional functionality of the assignment
+        {
+            GetProductDto Data = new GetProductDto();
+
+            AddProductDto testName = new AddProductDto();
+
+            testName.Name = newProduct.Name;
+            testName.ShortDescription = newProduct.ShortDescription;
+            testName.DetailedDescription = newProduct.DetailedDescription;
+            testName.Category = newProduct.Category;
+            testName.StartingPrice = newProduct.StartingPrice;
+            testName.BidEndDate = newProduct.BidEndDate;
+
+            if(ProductNameValidation(testName))
             {
-                Product product = _mapper.Map<Product>(newProduct);                                             //Mapping the DTO to the Product
+                Product product = _mapper.Map<Product>(newProduct);
+
                 product.Seller = _context.Sellers
-                    .FirstOrDefault(s => s.User.Id == GetUserId());
-                product.SellerId = product.Seller.Id;
+                    .FirstOrDefault(s => s.Id == product.SellerId);
 
-                _context.Products.Add(product);                                                                 //Adding product to the database
-                await _context.SaveChangesAsync();                                                              //Saving changes in the database
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
 
-                response.Data = await _context.Products                                                         //populating response ... grabbing from Products Table in the database
-                    .Select(p => _mapper.Map<GetProductDto>(p))                                                 //Maps the products selected to Dto
-                    .ToListAsync();                                                                             //puts it in a list form
+                product = await _context.Products.FirstOrDefaultAsync(p => p.Name == newProduct.Name);
 
-            }
-            else
-            {
-                response.Success = false;
-                response.Message = "Product didnt pass the Name Validation";
+                Data = _mapper.Map<GetProductDto>(product);
+                
             }
 
-                return response;
+                return Data;
         }
-        public async Task<ServiceResponse<List<GetProductDto>>> DeleteProduct(int id)
+        public async Task<List<GetProductDto>> DeleteProduct(int id)
         {
-            ServiceResponse<List<GetProductDto>> response = new ServiceResponse<List<GetProductDto>>();         //Dto instantiation
+            List<GetProductDto> Data = new List<GetProductDto>();         //Dto instantiation
             Product product = _context.Products
                 .FirstOrDefault(p => p.Id == id);                                                               //Search Products table where the project id = id given and save it as a new product
             
@@ -77,68 +105,68 @@ namespace E_Auction.Services.ProductService
                             _context.Products.Remove(product);                                                              //remove product from database
                             await _context.SaveChangesAsync();                                                              //save chanes in the database
 
-                            response.Data = await _context.Products                                                         //populating response...grabbing all products from table
+                            Data = await _context.Products                                                         //populating response...grabbing all products from table
                                 .Select(p => _mapper.Map<GetProductDto>(p))
                                 .ToListAsync();
                         }
                         else
                         {
-                            response.Success = false;
-                            response.Message = "Cannot Delete! Buyers already have bids on this!";
+                            // response.Success = false;
+                            // response.Message = "Cannot Delete! Buyers already have bids on this!";
                         }
                     }
                     else
                     {
-                        response.Success = false;
-                        response.Message = "Cannot delete! The bid closed on: " + product.BidEndDate;
+                        // response.Success = false;
+                        // response.Message = "Cannot delete! The bid closed on: " + product.BidEndDate;
                     }
                 }
                 else
                 {
-                    response.Success = false;
-                    response.Message = "Product with id: "+ id +" could not be found";
+                    // response.Success = false;
+                    // response.Message = "Product with id: "+ id +" could not be found";
                 }
             }
             else
             {
-                response.Success = false;
-                response.Message = "Cannot Delete! You do not own this product.";
+                // response.Success = false;
+                // response.Message = "Cannot Delete! You do not own this product.";
             }
 
-                return response;
+                return Data;
         }
-        public async Task<ServiceResponse<GetProductDto>> GetProductById(int id)
+        public async Task<GetProductDto> GetProductById(int id)
         {
-            ServiceResponse<GetProductDto> response = new ServiceResponse<GetProductDto>();
+            GetProductDto Data = new GetProductDto();
 
             Product product = _context.Products.FirstOrDefault(p => p.Id == id);
             
             if(product != null)
             {
-                response.Data = _mapper.Map<GetProductDto>(product);
+                Data = _mapper.Map<GetProductDto>(product);
             }
             else
             {
-                response.Success = false;
-                response.Message = "Product with id: '"+ id +"' could not be found";
+                // response.Success = false;
+                // response.Message = "Product with id: '"+ id +"' could not be found";
             }
 
-            return response;
+            return Data;
         }
-        public async Task<ServiceResponse<List<GetProductDto>>> GetProducts()
+        public async Task<List<GetProductDto>> GetProducts()
         {
             var dbproduct = await _context.Products.Select(p =>_mapper.Map<GetProductDto>(p)).ToListAsync();
-            ServiceResponse<List<GetProductDto>> response = new ServiceResponse<List<GetProductDto>>();
+            List<GetProductDto> Data = new List<GetProductDto>();
             if(dbproduct != null)
             {
-            response.Data = dbproduct;
+            Data = dbproduct;
             }
             else 
             {
-                response.Success = false;
-                response.Message = "Data not found";
+                // response.Success = false;
+                // response.Message = "Data not found";
             }
-            return response;
+            return Data;
         }
 
 

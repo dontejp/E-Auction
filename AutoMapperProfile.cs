@@ -15,6 +15,7 @@ namespace E_Auction
         public AutoMapperProfile()
         {
             CreateMap<AddProductDto, Product>();
+            CreateMap<AddProductWithSellerDto, Product>();
             CreateMap<Product, GetProductDto>();
             CreateMap<AddSellerDto, Seller>();
             CreateMap<Seller, GetSellerDto>();

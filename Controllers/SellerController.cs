@@ -26,5 +26,11 @@ namespace E_Auction.Controllers
         {
             return Ok(await _sellerService.AddSeller(newSeller)); 
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GetSellerDto>> GetSellerbyId(int id)
+        {
+            return Ok(await _sellerService.GetSellerById(id));
+        }
     }
 }

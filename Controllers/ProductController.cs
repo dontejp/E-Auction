@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Auction.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route("[controller]")]
     public class ProductController : ControllerBase
@@ -22,26 +22,32 @@ namespace E_Auction.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> GetProducts()                             
+        public async Task<ActionResult<List<GetProductDto>>> GetProducts()                             
         {
+            try{
             return Ok(await _productService.GetProducts());                                     
+            }
+            catch(Exception e){
+                
+                return StatusCode(500, e.Message);
+            }
         }
 
         [HttpGet("{id}")]
 
-        public async Task<ActionResult<ServiceResponse<GetProductDto>>> GetProductbyId(int id)                          
+        public async Task<ActionResult<GetProductDto>> GetProductbyId(int id)                          
         {
             return Ok(await _productService.GetProductById(id));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> AddProduct(AddProductDto newProduct)      
+        public async Task<ActionResult<List<GetProductDto>>> AddProduct(AddProductWithSellerDto newProduct)      
         {
             return Ok(await _productService.AddProduct(newProduct));
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ServiceResponse<List<GetProductDto>>>> DeleteProduct(int id)
+        public async Task<ActionResult<List<GetProductDto>>> DeleteProduct(int id)
         {
             return Ok(await _productService.DeleteProduct(id));
         }

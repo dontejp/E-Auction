@@ -52,9 +52,19 @@ namespace E_Auction.Services.SellerService
             return response;
         }
 
-        public Task<ServiceResponse<GetSellerDto>> GetSellerById()
+        public async Task<GetSellerDto> GetSellerById(int id)
         {
-            throw new NotImplementedException();
+            GetSellerDto Data = new GetSellerDto();
+
+            Seller seller = _context.Sellers.FirstOrDefault(s => s.Id == id);
+            
+            if( seller != null)
+            {
+                Data = _mapper.Map<GetSellerDto>(seller);
+            }
+            
+
+            return Data;
         }
 
         private bool SellerNameValidation(AddSellerDto newSeller)

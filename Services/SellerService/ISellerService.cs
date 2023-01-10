@@ -10,7 +10,7 @@ namespace E_Auction.Services.SellerService
     public interface ISellerService
     {
         Task<ServiceResponse<GetSellerDto>> AddSeller(AddSellerDto newSeller);
-        Task<ServiceResponse<GetSellerDto>> GetSellerById();
+        Task<GetSellerDto> GetSellerById(int id);
 
     }
 }
