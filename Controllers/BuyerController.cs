@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Auction.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class BuyerController : ControllerBase
@@ -22,6 +22,13 @@ namespace E_Auction.Controllers
         public async Task<ActionResult<ServiceResponse<List<GetBuyerDto>>>> AddBuyer(AddBuyerDto newBid)
         {
             return Ok(await _buyerService.CreateBuyer(newBid));
+        }
+
+        [HttpGet("{id}")]
+
+        public async Task<ActionResult<List<GetBuyerDto>>> GetBuyersByProductId (int id)
+        {
+            return Ok(await _buyerService.GetBuyersByProductId(id));
         }
 
     }

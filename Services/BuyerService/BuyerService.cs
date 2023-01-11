@@ -65,6 +65,23 @@ namespace E_Auction.Services.BuyerService
             return response;
         }
 
+        public async Task<List<GetBuyerDto>> GetBuyersByProductId(int id)
+        {
+            List<GetBuyerDto> Data = new List<GetBuyerDto>();
+
+            var buyers = await _context.Buyers
+                .Where(b => b.ProductId == id )
+                .Select(b => _mapper.Map<GetBuyerDto>(b)).ToListAsync();
+            
+            if(buyers != null)
+            {
+                Data = buyers;
+            }
+            else{
+                //do nothing
+            }
+            return Data;
+        }
         private bool BuyerNameValidation(AddBuyerDto newBid)
         {
             bool flag = true;
